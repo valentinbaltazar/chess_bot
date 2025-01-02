@@ -18,7 +18,23 @@ def main(n_games):
 
     return res
 
+# post processing
+
+def win_loss(results):
+    engine_wins = sum([1 for n in results if n[1][1]=="Stockfish"])
+    agent_wins = sum([1 for n in results if n[1][1]=="Agent"])
+    draws = sum([1 for n in results if n[1][1]=="Draw"])
+
+    print(f"Total Games {len(results)}")
+    print(f"Stockfish: {engine_wins}")
+    print(f"Agent: {agent_wins}")
+    print(f"Draws: {draws}")
+
+    
+
 # Run some games
 if __name__=='__main__':
-    results = main(n_games=5)
-    print(results)
+    results = main(n_games=100)
+    # print(results)
+    win_loss(results)
+

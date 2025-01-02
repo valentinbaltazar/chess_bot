@@ -2,16 +2,19 @@ import chess
 import chess.engine
 
 class Stockfish:
-    def __init__(self, engine_path):
+    def __init__(self, engine_path, elo_rating=1400):
         """
         Initializes the Stockfish engine.
 
         Args:
             engine_path: Path to the Stockfish executable.
         """
+       
         self.engine = chess.engine.SimpleEngine.popen_uci(engine_path)
+        self.engine.configure({"UCI_LimitStrength": True, "UCI_Elo": elo_rating})
 
-    def get_move(self, board, time_limit=0.1):
+
+    def get_move(self, board, search_depth=5):
         """
         Gets the best move from Stockfish for the given board position.
 
@@ -22,7 +25,7 @@ class Stockfish:
         Returns:
             The best move as a chess.Move object.
         """
-        result = self.engine.play(board, chess.engine.Limit(time=time_limit))
+        result = self.engine.play(board, chess.engine.Limit(depth=search_depth))
         return result.move
 
     def quit(self):
