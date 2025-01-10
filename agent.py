@@ -5,22 +5,33 @@ import chess
 import random
 
 import evaluate as Eval
+from search import minimax
 
 class ChessBot:
     """Returns a legal move for the given board state"""
 
-    # def __init__(self, board):
-    #     self.board = board
+    def __init__(self, name):
+        self.name = name # will call different methods
     
-    def get_move(self, board):
-        # legal_moves = list(board.legal_moves)
-        # print(legal_moves)
-        # return random.randint(0, len(legal_moves)-1)
-        # return self.checkmate_priority(board)
+    def get_move(self, board, is_max):
+        """Each method is a different bot, specified by name"""
+        if self.name == "random":
+            return self.random_bot(board)
+        elif self.name == "priority":
+            return self.checkmate_priority(board)
+        elif self.name == "greedy":
+            # use evaluation to pick best move (no depth searching)
+            return self.greedy_max(board)
+        elif self.name == "minimax":
+            return self.minimax_bot(board, 2, is_max) # depth of 2 for testing
+        else:
+            return None
 
-        # use evaluation to pick best move (no depth searching)
-        return self.greedy_max(board)
-
+    def minimax_bot(self, board, depth, is_max):
+        """Evaluates positions and returns best move at specified depth"""
+        eval, move = minimax(board, depth, is_max)
+        return move
+    
     def greedy_max(self, board):
         # use eval and take best move without move search
         legal_moves = list(board.legal_moves)
@@ -42,16 +53,10 @@ class ChessBot:
         return best_move
 
 
-
-
-
-            
-
     def evaluate_position(self, board):
         """Evaluation metric to use when determining best move"""
         return Eval.Evaluation.evaluate(board)
 
-        
         
     def checkmate_priority(self, board):
     
@@ -77,4 +82,6 @@ class ChessBot:
         # 4. Return a random move
         return random.choice(moves)
     
-    
+    def random_bot(self, board):
+        legal_moves = list(board.legal_moves)
+        return random.choice(legal_moves)

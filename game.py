@@ -6,13 +6,13 @@ import chess.engine
 
 class ChessMatch:
 
-    def __init__(self, agent, engine, total_games):
-        self.agent = agent
-        self.engine = engine
+    def __init__(self, agent1, agent2, total_games):
+        self.agent1 = agent1
+        self.agent2 = agent2
         self.total_games = total_games
         self.outcomes = []
         # self.board = chess.Board()
-        self.is_white = True # Agent will always play first as white
+        self.is_white = True # Agent1 will always play first as white
 
     def play_all(self):
         for i in range(self.total_games):
@@ -25,11 +25,11 @@ class ChessMatch:
     def play_match(self):
 
         if self.is_white:
-            white_player = self.agent
-            black_player = self.engine
+            white_player = self.agent1
+            black_player = self.agent2
         else:
-            white_player = self.engine
-            black_player = self.agent
+            white_player = self.agent2
+            black_player = self.agent1
 
         board = chess.Board()
         move_count = 0
@@ -37,7 +37,7 @@ class ChessMatch:
 
         while not board.is_game_over():
             # Get move from white
-            white_move = white_player.get_move(board)
+            white_move = white_player.get_move(board, True)
             move_list.append(board.san(white_move))
             board.push(white_move)
     
@@ -46,7 +46,7 @@ class ChessMatch:
                 break
 
             # Get move from black
-            black_move = black_player.get_move(board)
+            black_move = black_player.get_move(board, False)
             move_list.append(board.san(black_move))
             board.push(black_move)
         
@@ -54,22 +54,15 @@ class ChessMatch:
             if board.is_game_over():
                 break
 
-            # print(f"White's move: {white_move}")
-            # print(f"Black's move: {black_move}")
-            # print(board)
-    
-        # print("*****Game Over*****")
-        # print(board)
-        # print(f"Number of moves: {move_count}")
 
         # Determine the winner
         result = board.result() 
         if result == "1-0":
             # print("White wins!")
-            winner = "Agent" if self.is_white else "Stockfish"
+            winner = self.agent1.name if self.is_white else self.agent2.name
         elif result == "0-1":
             # print("Black wins!")
-            winner = "Stockfish" if self.is_white else "Agent"
+            winner = self.agent2.name if self.is_white else self.agent1.name
         elif result == "1/2-1/2":
             # print("Draw!")
             winner = "Draw"
